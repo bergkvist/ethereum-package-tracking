@@ -1,14 +1,19 @@
 {
-  "name": "system-analysis",
+  "name": "temp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "chai": "^4.2.0",
-    "ganache-cli": "^6.4.3",
-    "mocha": "^6.1.4",
+    "@types/jest": "24.0.13",
+    "@types/node": "12.0.4",
+    "@types/react": "16.8.19",
+    "@types/react-dom": "16.8.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "typescript": "3.5.1",
+    "chai": "^4.2.0",
+    "ganache-cli": "^6.4.3",
+    "mocha": "^6.1.4",
     "solc": "^0.5.9",
     "styled-components": "^4.2.1",
     "truffle": "^5.0.20",
@@ -35,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typechain": "^0.3.14"
   }
 }
