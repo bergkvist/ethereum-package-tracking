@@ -18,7 +18,7 @@ async function getInjectedWeb3 () {
 
 async function x() {
   const web3 = await web3Promise
-  const contract = await new web3.eth.Contract(abi, '0x4394E30B1965566E5072F6fBd112c2225aaC4E93')
+  const contract = await new web3.eth.Contract(abi, '0x2c803Ed63e6D65374EFd5018FD850Bc60C8E3EC6')
   const result = await contract.methods.message().call()
   return result
 }
