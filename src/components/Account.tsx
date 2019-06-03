@@ -18,13 +18,17 @@ export class Account extends React.Component<DrizzleProps> {
 
     const balance = this.props.drizzleState.accountBalances[account]
 
+    const balanceText: string = (balance !== undefined)
+      ? `(${web3.utils.fromWei(balance, 'ether')} ETH)`
+      : '(Loading balance...)'
+
     return (
       <Message success>
         <Message.Header>
           You are signed in!
         </Message.Header>
         <div>{account}</div>
-        <div>({web3.utils.fromWei(balance, 'ether')} ETH)</div>
+        <div>{balanceText}</div>
       </Message>
     )
   }
