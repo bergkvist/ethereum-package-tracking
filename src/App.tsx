@@ -4,6 +4,7 @@ import * as UI from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import { Account } from './components/Account'
 import { Form } from './components/Form'
+import { TransactionList } from './components/Transaction'
 
 class PackageTracking extends React.Component<DrizzleProps> {
   state = { dataKey: null };
@@ -25,7 +26,7 @@ class PackageTracking extends React.Component<DrizzleProps> {
 }
 
 class App extends React.Component {
-  state = { loading: true, drizzleState: ({} as any) }
+  state = { loading: true, drizzleState: drizzle.store.getState() }
   
   componentDidMount() {
     drizzle.store.subscribe(() => {
@@ -39,13 +40,13 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.loading) return <UI.Loader active inline='centered'>Loading Drizzle...</UI.Loader>
+    //if (this.state.loading) return <UI.Loader active inline='centered'>Loading Drizzle...</UI.Loader>
     //return <D>{JSON.stringify(this.state.drizzleState, null, 2)}</D>
     const panes = [
       // Only enabled if address exists
       { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackageTracking drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
       { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}><Form drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> },
-      { menuItem: 'Register new Package', render: () => <div>yolo</div> }
+      { menuItem: 'Create Package', render: () => <div>yolo</div> }
     ]
     // Make sure address
     return (
@@ -53,14 +54,22 @@ class App extends React.Component {
         <UI.Header as='h1' textAlign='center'>
           Package Tracking
           <UI.Header.Subheader>
-            On Ethereum
+            On Ethereum (Ropsten Testnet)
           </UI.Header.Subheader>
         </UI.Header>
 
-        <Account drizzle={drizzle} drizzleState={this.state.drizzleState} />
+        <Account drizzleState={this.state.drizzleState} loading={this.state.loading} />
 
-        <UI.Tab menu={{ pointing: true }} panes={panes} />
-      </div>
+        {!this.state.loading
+          ? <UI.Tab menu={{ pointing: true }} panes={panes} />
+          : null
+        }
+
+        {!this.state.loading
+          ? <TransactionList drizzleState={this.state.drizzleState} />
+          : null
+        }
+        </div>
     )
   }
 }

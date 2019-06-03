@@ -10,8 +10,6 @@ const NETWORK_NODE = 'wss://ropsten.infura.io/ws'
 
 // @ts-ignore (window.web3 might be injected)
 const web3IsInjected = typeof window.web3 !== 'undefined'
-// @ts-ignore (window.ethereum might be injected)
-const web3IsLocked = typeof window.ethereum !== 'undefined'
 
 export const web3 = web3IsInjected
   // @ts-ignore (window.web3.currentProvider is injected by Metamask)
@@ -37,14 +35,9 @@ const drizzleOptions = {
 
 export const drizzle = new Drizzle(drizzleOptions, generateStore(drizzleOptions))
 
-export interface DrizzleProps { 
+// Enable a React component to interract with Drizzle.
+// React.Component<DrizzleProps>
+export interface DrizzleProps {
   drizzle: any
   drizzleState: any 
-}
-
-export const getAccounts = async () => {
-    if (!web3IsInjected) return Promise.resolve([])
-    if (!web3IsLocked) return web3.eth.getAccounts()
-    // @ts-ignore (window.ethereum is injected by Metamask)
-    return window.ethereum.enable().catch(err => ([]))
 }
