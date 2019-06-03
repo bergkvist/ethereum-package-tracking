@@ -3,6 +3,7 @@ import { drizzle, DrizzleProps } from './web3'
 import * as UI from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import { Account } from './components/Account'
+import { Form } from './components/Form'
 
 class PackageTracking extends React.Component<DrizzleProps> {
   state = { dataKey: null };
@@ -43,7 +44,7 @@ class App extends React.Component {
     const panes = [
       // Only enabled if address exists
       { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackageTracking drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
-      { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}>Scanning Contents</UI.Tab.Pane> },
+      { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}><Form drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> },
       { menuItem: 'Register new Package', render: () => <div>yolo</div> }
     ]
     // Make sure address
