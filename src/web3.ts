@@ -1,18 +1,44 @@
 import Web3 from 'web3'
-import { abi, networks } from './ethereum/build/contracts/PackageTracking.json'
+import PackageTracking from './ethereum/build/contracts/PackageTracking.json'
+// @ts-ignore (drizzle does sadly not have typescript bindings)
+import { Drizzle, generateStore } from 'drizzle'
 
-const NETWORK_ID = 3
+//const NETWORK_ID = 3
 const NETWORK_NODE = 'wss://ropsten.infura.io/ws'
+//const NETWORK_NODE = 'https://ropsten.infura.io'
+
 
 // @ts-ignore (window.web3 might be injected)
 const web3IsInjected = typeof window.web3 !== 'undefined'
 // @ts-ignore (window.ethereum might be injected)
 const web3IsLocked = typeof window.ethereum !== 'undefined'
 
-export const web3 = web3IsInjected
-    // @ts-ignore (window.web3.currentProvider is injected by Metamask)
-    ? new Web3(window.web3.currentProvider)
-    : new Web3(NETWORK_NODE)
+const customProvider = web3IsInjected
+  // @ts-ignore (window.web3.currentProvider is injected by Metamask)
+  ? window.web3.currentProvider
+  //: new Web3.providers.HttpProvider('https://ropsten.infura.io')
+  : new Web3.providers.WebsocketProvider(NETWORK_NODE)
+
+export const web3 = new Web3(customProvider)
+//web3.eth.net.getId().then(console.log)
+//console.log(customProvider)
+console.log(web3.version)
+const drizzleOptions = {
+  contracts: [ PackageTracking ],
+  polls: { accounts: 3000, blocks: 3000 },
+  syncAlways: false,
+  web3: { 
+    customProvider: web3.currentProvider,
+    fallback: {
+      type: 'ws',
+      url: NETWORK_NODE
+    }
+  }
+}
+
+export const drizzle = new Drizzle(drizzleOptions, generateStore(drizzleOptions))
+
+
 
 export const getAccounts = async () => {
     if (!web3IsInjected) return Promise.resolve([])
@@ -20,5 +46,3 @@ export const getAccounts = async () => {
     // @ts-ignore (window.ethereum is injected by Metamask)
     return window.ethereum.enable().catch(err => ([]))
 }
-
-export const PackageTracking = new web3.eth.Contract(abi as any[], networks[NETWORK_ID].address)
