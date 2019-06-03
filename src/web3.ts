@@ -37,7 +37,10 @@ const drizzleOptions = {
 
 export const drizzle = new Drizzle(drizzleOptions, generateStore(drizzleOptions))
 
-
+export interface DrizzleProps { 
+  drizzle: any
+  drizzleState: any 
+}
 
 export const getAccounts = async () => {
     if (!web3IsInjected) return Promise.resolve([])

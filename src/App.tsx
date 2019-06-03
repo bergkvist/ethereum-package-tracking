@@ -1,47 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { drizzle, getAccounts, web3 } from './web3'
-import { Dropdown } from 'semantic-ui-react'
-import * as R from 'ramda'
+import React from 'react';
+import { drizzle, DrizzleProps } from './web3'
+import * as UI from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
-import styled from 'styled-components'
+import { Account } from './components/Account'
 
-const D = styled.div`
-  white-space: pre-wrap;
-`
-
-const AccountPicker = () => {
-  const [accounts, setAccounts] = useState([])
-
-  useEffect(() => {
-    ;(async () => {
-      const accounts = await getAccounts()
-      const balances = await Promise.all(accounts.map((a: string) => web3.eth.getBalance(a).then(b => web3.utils.fromWei(b, 'ether'))))
-      setAccounts(
-        //@ts-ignore
-        R.zip(accounts, balances).map(([account, balance]) => ({
-          key: account,
-          text: account,
-          value: account,
-          description: `${balance} ETH`
-        }))
-      )
-    })()
-  }, [])
-
-  //getAccounts()
-  //  .then(as => as.map((a: string) => ({ key: a, text: a, value: a }))).then(setAccounts)
-  return <Dropdown 
-    placeholder='Select account'
-    selection
-    fluid
-    options={accounts}
-  />
-}
-
-interface DrizzleProps {
-  drizzle: any
-  drizzleState: any
-}
 class PackageTracking extends React.Component<DrizzleProps> {
   state = { dataKey: null };
 
@@ -50,6 +12,7 @@ class PackageTracking extends React.Component<DrizzleProps> {
     const contract = drizzle.contracts.PackageTracking;
     const dataKey = contract.methods.message.cacheCall();
     this.setState({ dataKey });
+    console.log(dataKey)
   }
 
   render() {
@@ -61,7 +24,7 @@ class PackageTracking extends React.Component<DrizzleProps> {
 }
 
 class App extends React.Component {
-  state = { loading: true, drizzleState: null }
+  state = { loading: true, drizzleState: ({} as any) }
   
   componentDidMount() {
     drizzle.store.subscribe(() => {
@@ -75,15 +38,26 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.loading) return <D>{JSON.stringify(this.state.drizzleState, null, 2)}</D>
+    if (this.state.loading) return <UI.Loader active inline='centered'>Loading Drizzle...</UI.Loader>
+    //return <D>{JSON.stringify(this.state.drizzleState, null, 2)}</D>
+    const panes = [
+      // Only enabled if address exists
+      { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackageTracking drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
+      { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}>Scanning Contents</UI.Tab.Pane> },
+    ]
+    // Make sure address
     return (
       <div className="App">
-        <header className="App-header">
-          <AccountPicker />
-          <PackageTracking 
-            drizzle={drizzle} 
-            drizzleState={this.state.drizzleState} />
-        </header>
+        <UI.Header as='h1' textAlign='center'>
+          The Trust Platform
+          <UI.Header.Subheader>
+            Package Tracking System
+          </UI.Header.Subheader>
+        </UI.Header>
+
+        <Account drizzle={drizzle} drizzleState={this.state.drizzleState} />
+
+        <UI.Tab menu={{ pointing: true }} panes={panes} />
       </div>
     )
   }
