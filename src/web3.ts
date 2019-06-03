@@ -13,13 +13,12 @@ const web3IsInjected = typeof window.web3 !== 'undefined'
 // @ts-ignore (window.ethereum might be injected)
 const web3IsLocked = typeof window.ethereum !== 'undefined'
 
-const customProvider = web3IsInjected
+export const web3 = web3IsInjected
   // @ts-ignore (window.web3.currentProvider is injected by Metamask)
-  ? window.web3.currentProvider
+  ? new Web3(window.web3.currentProvider)
   //: new Web3.providers.HttpProvider('https://ropsten.infura.io')
-  : new Web3.providers.WebsocketProvider(NETWORK_NODE)
+  : new Web3(NETWORK_NODE)
 
-export const web3 = new Web3(customProvider)
 //web3.eth.net.getId().then(console.log)
 //console.log(customProvider)
 console.log(web3.version)
