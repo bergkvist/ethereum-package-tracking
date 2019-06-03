@@ -44,14 +44,15 @@ class App extends React.Component {
       // Only enabled if address exists
       { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackageTracking drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
       { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}>Scanning Contents</UI.Tab.Pane> },
+      { menuItem: 'Register new Package', render: () => <div>yolo</div> }
     ]
     // Make sure address
     return (
       <div className="App">
         <UI.Header as='h1' textAlign='center'>
-          The Trust Platform
+          Package Tracking
           <UI.Header.Subheader>
-            Package Tracking System
+            On Ethereum
           </UI.Header.Subheader>
         </UI.Header>
 
