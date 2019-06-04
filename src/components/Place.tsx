@@ -10,31 +10,31 @@ export class Place extends React.Component<DrizzleProps> {
     this.setState({ dataKey })
   }
   handleChange(event) {
-
+    this.setState({ [event.target.name]: event.target.value })
   }
   handleSubmit(event) {
     event.preventDefault()
     const country = this.state.newCountry
     const location = this.state.newLocation
-    const address = this.props.drizzleState.addresses[0]
-    this.props.drizzle.contracts.PackageTracking.methods.setPlace(country, location, { from: address })
+    const address = this.props.drizzleState.accounts[0]
+    this.props.drizzle.contracts.PackageTracking.methods.setPlace.cacheSend(country, location, { from: address })
   }
   render() {
     // @ts-ignore
     const place = this.props.drizzleState.contracts.PackageTracking.getPlace[this.state.dataKey]
-    
-    const country  = 'Current: ' + (place ? place.value[0] : 'None')
-    const location = 'Current: ' + (place ? place.value[1] : 'None')
+    console.log(place)
+    const country  = 'Current: ' + (place && place.value ? place.value[0] : 'None')
+    const location = 'Current: ' + (place && place.value ? place.value[1] : 'None')
 
     return <Fragment>
     <UI.Form>
       <UI.Form.Field>
         <label>Country</label>
-        <input type='text' placeholder={country} value={this.state.newCountry} onChange={e => this.handleChange(e)} />
+        <input type='text' name='newCountry' placeholder={country} value={this.state.newCountry} onChange={e => this.handleChange(e)} />
       </UI.Form.Field>
       <UI.Form.Field>
         <label>Location</label>
-        <input type='text' placeholder={location} value={this.state.newLocation} onChange={e => this.handleChange(e)} />
+        <input type='text' name='newLocation' placeholder={location} value={this.state.newLocation} onChange={e => this.handleChange(e)} />
       </UI.Form.Field>
       <UI.Button onClick={e => this.handleSubmit(e)}>Submit</UI.Button>
     </UI.Form>
