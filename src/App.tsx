@@ -46,7 +46,7 @@ class App extends React.Component {
           : null
         }
 
-        {!this.state.loading
+        {account && !this.state.loading
           ? <TransactionList drizzleState={this.state.drizzleState} />
           : null
         }
