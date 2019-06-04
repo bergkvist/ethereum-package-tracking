@@ -37,18 +37,17 @@ export class Scan extends React.Component<{ drizzle: any, drizzleState: any, sca
 export class Package extends React.Component<{ drizzle: any, drizzleState: any, packageId: number }> {
   state = { dataKeyPackage: null, dataKeyScans: null, dataKeyPlace: null }
   componentDidMount() {
-    // Might want to "uncache" upon removal
+    const account = this.props.drizzleState.accounts[0]
     const { PackageTracking } = this.props.drizzle.contracts
     const dataKeyPackage = PackageTracking.methods.getPackageById.cacheCall(this.props.packageId)
     const dataKeyScans = PackageTracking.methods.getScanIdsByPackageId.cacheCall(this.props.packageId)
-    const dataKeyPlace = PackageTracking.methods.getPlace.cacheCall()
+    const dataKeyPlace = PackageTracking.methods.getPlace.cacheCall({ from: account })
     this.setState({ dataKeyPackage, dataKeyScans, dataKeyPlace })
   }
   
   handleScanPackage() {
     const account = this.props.drizzleState.accounts[0]
-    const { PackageTracking } = this.props.drizzle.contracts
-    PackageTracking.methods.scanPackage.cacheSend(this.props.packageId, { from: account })
+    this.props.drizzle.contracts.PackageTracking.methods.scanPackage.cacheSend(this.props.packageId, { from: account })
   }
 
   render() {

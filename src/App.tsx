@@ -23,15 +23,13 @@ class App extends React.Component {
   }
 
   render() {
-    const panes = [{ menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackagePicker drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> }]
-    
-    if (this.state.drizzleState.accounts[0]) {
-      panes.push({ menuItem: 'My Place', render: () => <UI.Tab.Pane attached={false}><Place drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> })
+    const account = this.state.drizzleState.accounts[0]
+    const panes = [{ menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackagePicker key={account} drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> }]
+    if (account) {
+      panes.push({ menuItem: 'My Place', render: () => <UI.Tab.Pane attached={false}><Place key={account} drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> })
       panes.push({ menuItem: 'Create Package', render: () => <UI.Tab.Pane attached={false}><CreatePackage drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> })
     }
-  
-
-    // Make sure address
+    
     return (
       <div className="App">
         <UI.Header as='h1' textAlign='center'>

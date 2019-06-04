@@ -6,7 +6,8 @@ import { DrizzleProps } from '../web3'
 export class Place extends React.Component<DrizzleProps> {
   state = { dataKey: null, newCountry: '', newLocation: '' }
   componentDidMount() {
-    const dataKey = this.props.drizzle.contracts.PackageTracking.methods.getPlace.cacheCall()
+    const account = this.props.drizzleState.accounts[0]
+    const dataKey = this.props.drizzle.contracts.PackageTracking.methods.getPlace.cacheCall({ from: account })
     this.setState({ dataKey })
   }
   handleChange(event) {
@@ -20,9 +21,9 @@ export class Place extends React.Component<DrizzleProps> {
     this.props.drizzle.contracts.PackageTracking.methods.setPlace.cacheSend(country, location, { from: address })
   }
   render() {
+    console.log(this.state.dataKey)
     // @ts-ignore
     const place = this.props.drizzleState.contracts.PackageTracking.getPlace[this.state.dataKey]
-    console.log(place)
     const country  = 'Current: ' + (place && place.value ? place.value[0] : 'None')
     const location = 'Current: ' + (place && place.value ? place.value[1] : 'None')
 
