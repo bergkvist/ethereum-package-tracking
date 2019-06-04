@@ -1,29 +1,12 @@
 import React from 'react';
-import { drizzle, DrizzleProps } from './web3'
+import { drizzle } from './web3'
 import * as UI from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import { Account } from './components/Account'
-import { Form } from './components/Form'
+import { Place } from './components/Place'
 import { TransactionList } from './components/Transaction'
-
-class PackageTracking extends React.Component<DrizzleProps> {
-  state = { dataKey: null };
-
-  componentDidMount() {
-    const { drizzle } = this.props;
-    const contract = drizzle.contracts.PackageTracking;
-    const dataKey = contract.methods.message.cacheCall();
-    this.setState({ dataKey });
-    console.log(dataKey)
-  }
-
-  render() {
-    const { PackageTracking } = this.props.drizzleState.contracts;
-    // @ts-ignore
-    const myString = PackageTracking.message[this.state.dataKey];
-    return <p>{myString && myString.value}</p>;
-  }
-}
+import { PackagePicker } from './components/TrackPackage'
+import { CreatePackage } from './components/CreatePackage'
 
 class App extends React.Component {
   state = { loading: true, drizzleState: drizzle.store.getState() }
@@ -40,13 +23,12 @@ class App extends React.Component {
   }
 
   render() {
-    //if (this.state.loading) return <UI.Loader active inline='centered'>Loading Drizzle...</UI.Loader>
-    //return <D>{JSON.stringify(this.state.drizzleState, null, 2)}</D>
     const panes = [
       // Only enabled if address exists
-      { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackageTracking drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
-      { menuItem: 'Scan Package', render: () => <UI.Tab.Pane attached={false}><Form drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> },
-      { menuItem: 'Create Package', render: () => <div>yolo</div> }
+      { menuItem: 'Track Package', render: () => <UI.Tab.Pane attached={false}><PackagePicker drizzle={drizzle} drizzleState={this.state.drizzleState}/></UI.Tab.Pane> },
+      // Should only exist if address is defined (user is signed in)
+      { menuItem: 'My Place', render: () => <UI.Tab.Pane attached={false}><Place drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> },
+      { menuItem: 'Create Package', render: () => <UI.Tab.Pane attached={false}><CreatePackage drizzle={drizzle} drizzleState={this.state.drizzleState} /></UI.Tab.Pane> }
     ]
     // Make sure address
     return (
